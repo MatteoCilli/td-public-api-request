@@ -68,3 +68,73 @@ function generateModals(people) {
     );
     return people
 }
+
+// show/hide modals
+function showModals(people) {
+    let cards = document.getElementsByClassName('card');
+    let modals = document.getElementsByClassName('modal-container');
+    let closeModals = document.getElementsByClassName('modal-close-btn');
+    let previous = document.getElementsByClassName('modal-prev');
+    let next = document.getElementsByClassName('modal-next');
+
+    if (previous[0]) { previous[0].style.display = 'none'; } // removes the previous button on the first modal
+    if (cards.length > 0) { next[cards.length - 1].style.display = 'none'; } // removes the next button on the last modal
+
+    for (let i = 0; i < cards.length; i++) {
+        modals[i].style.display = 'none'; // hides all modals
+        cards[i].addEventListener('click', () => { modals[i].style.display = 'block' }); // shows the modal
+        closeModals[i].addEventListener('click', () => { modals[i].style.display = 'none' }) // hides the modal again
+
+        next[i].addEventListener('click', () => {
+            modals[i].style.display = 'none'; // hides the current modal
+            modals[i + 1].style.display = 'block' //shows the next modal
+        })
+        previous[i].addEventListener('click', () => {
+            modals[i].style.display = 'none'; // hides the current modal
+            modals[i - 1].style.display = 'block'; //shows the previous modals
+        })
+
+    }
+
+
+    return people
+}
+
+
+//** search feature **/
+
+// insert necessary HTML
+searchContainer.insertAdjacentHTML('beforeend', `
+    <form action="#" method="get">
+        <input type="search" id="search-input" class="search-input" placeholder="Search...">
+        <input type="submit" value="&#x1F50D;" id="search-submit" class="search-submit">
+    </form>`);
+
+function searchFeature(people) {
+    const searchPeople = document.getElementsByClassName('search-input')[0];
+    const searchSubmit = document.getElementsByClassName('search-submit')[0];
+
+    function performSearch() {
+        gallery.innerHTML = ''; // clears the gallery
+        while (body.lastElementChild.className === 'modal-container') { body.removeChild(body.lastElementChild) } // removes the modals
+        const searchResults = people.filter(person => person.name.first.toUpperCase().includes(searchPeople.value.toUpperCase()) || person.name.last.toUpperCase().includes(searchPeople.value.toUpperCase()));
+        generateGallery(searchResults); // creates a gallery using the filtered results
+        generateModals(searchResults); // creates modals using the filtered results
+        showModals(searchResults); // allows for modals to be opened
+        if (Object.keys(searchResults).length === 0) { headerText.textContent = 'No results found.' } else { headerText.textContent = 'AWESOME STARTUP EMPLOYEE DIRECTORY' }
+    }
+
+    searchSubmit.addEventListener('click', () => { performSearch() }) //search on submit
+    searchPeople.addEventListener('keyup', () => { performSearch() }) //live search
+}
+
+// fetch and process data
+
+fetch(url)
+    .then(response => response.json())
+    .then(responseJson => responseJson.results)
+    .then(people => generateGallery(people))
+    .then(people => generateModals(people))
+    .then(people => showModals(people))
+    .then(people => searchFeature(people))
+    .catch(error => { headerText.textContent = 'Oh no, something went wrong.' })
