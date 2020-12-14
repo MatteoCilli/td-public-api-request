@@ -84,7 +84,6 @@ function showModals(people) {
         modals[i].style.display = 'none'; // hides all modals
         cards[i].addEventListener('click', () => { modals[i].style.display = 'block' }); // shows the modal
         closeModals[i].addEventListener('click', () => { modals[i].style.display = 'none' }) // hides the modal again
-
         next[i].addEventListener('click', () => {
             modals[i].style.display = 'none'; // hides the current modal
             modals[i + 1].style.display = 'block' //shows the next modal
@@ -124,8 +123,8 @@ function searchFeature(people) {
         if (Object.keys(searchResults).length === 0) { headerText.textContent = 'No results found.' } else { headerText.textContent = 'AWESOME STARTUP EMPLOYEE DIRECTORY' }
     }
 
-    searchSubmit.addEventListener('click', () => { performSearch() }) //search on submit
-    searchPeople.addEventListener('keyup', () => { performSearch() }) //live search
+    searchSubmit.addEventListener('click', () => { performSearch() }) // search on submit
+    searchPeople.addEventListener('keyup', () => { performSearch() }) // live search
 }
 
 // fetch and process data
